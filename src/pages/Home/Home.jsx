@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styles from './home.module.css';
 import Button from 'Components/Button/Button';
 import EmailTile from 'Components/EmailTile/EmailTile';
@@ -17,13 +17,40 @@ const FILTER_BUTTONS = ['Unread', 'Read', 'Favourite'];
 
 const Home = () => {
   const dispatch = useDispatch();
-  const { emails, selectedEmail } = useSelector((state) => state.emails);
+  const { emails, total, selectedEmail } = useSelector((state) => state.emails);
   const [selectedFilter, setSelectedFilter] = useState('');
   const [displayEmails, setDisplayEmails] = useState([]);
+  const [page, setPage] = useState(1);
+  const scrollableArea = useRef(null);
+  const isEmailsExists = useRef(false);
 
   useEffect(() => {
+    function fetchEmails() {
+      getAllEmails(page)
+        .then(({ data }) => {
+          const mails = JSON.parse(localStorage.getItem('emails') || '{}');
+
+          const list = data.list.map((email) => {
+            if (email.id in mails) {
+              email.favourite = mails[email.id].favourite;
+              email.read = mails[email.id].status === 'read';
+            } else {
+              email.favourite = false;
+              email.read = false;
+            }
+            email.body = '';
+            return email;
+          });
+          isEmailsExists.current = true;
+          dispatch(setEmails(list));
+          dispatch(setTotal(data.total));
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
     fetchEmails();
-  }, []);
+  }, [page]);
 
   useEffect(() => {
     if (selectedFilter === '') {
@@ -37,30 +64,32 @@ const Home = () => {
     }
   }, [selectedFilter, emails]);
 
-  function fetchEmails(page = 1) {
-    getAllEmails()
-      .then(({ data }) => {
-        const mails = JSON.parse(localStorage.getItem('emails') || '{}');
+  const handleObserver = useCallback((entries) => {
+    const target = entries[0];
+    console.log(entries);
+    if (target.isIntersecting) {
+      setPage((prev) => (total > prev * 10 ? prev + 1 : prev));
+    }
+  }, []);
 
-        const list = data.list.map((email) => {
-          if (email.id in mails) {
-            email.favourite = mails[email.id].favourite;
-            email.read = mails[email.id].status === 'read';
-          } else {
-            email.favourite = false;
-            email.read = false;
-          }
-          email.body = '';
-          return email;
-        });
-
-        dispatch(setEmails(list));
-        dispatch(setTotal(data.total));
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  }
+  useEffect(() => {
+    const option = {
+      root: null,
+      rootMargin: '-100px',
+      threshold: 0,
+    };
+    console.log(option);
+    const observer = new IntersectionObserver(handleObserver, option);
+    if (scrollableArea.current) {
+      const id = setInterval(() => {
+        const nodeList = document.querySelectorAll('#email_tile');
+        if (nodeList.length > 0) {
+          observer.observe(nodeList[nodeList.length - 1]);
+          clearInterval(id);
+        }
+      }, 500);
+    }
+  }, [handleObserver]);
 
   const handleEmailClick = (index, id) => {
     const localState = JSON.parse(localStorage.getItem('emails') || '{}');
@@ -101,6 +130,8 @@ const Home = () => {
         <div
           className={styles.email_list}
           style={{ flex: selectedEmail === null ? 1 : 0.3 }}
+          id='scrollArea'
+          ref={scrollableArea}
         >
           {displayEmails.map((email, index) => (
             <EmailTile

@@ -8,6 +8,6 @@ const api = axios.create({
   },
 });
 
-export const getAllEmails = () => api.get('/');
+export const getAllEmails = (page) => api.get('/', { params: { page } });
 
 export const getEmailBody = (id) => api.get('/', { params: { id } });

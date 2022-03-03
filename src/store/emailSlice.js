@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
   emails: [],
-  total: 0,
+  total: 15,
   selectedEmail: null,
 };
 

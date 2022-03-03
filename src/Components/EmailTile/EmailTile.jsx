@@ -15,6 +15,7 @@ const EmailTile = ({
     <article
       className={`${styles.main} ${read ? styles.read : styles.unread}`}
       onClick={onClick}
+      id='email_tile'
     >
       <aside className={styles.aside}>
         <Avatar name={from.name} />
