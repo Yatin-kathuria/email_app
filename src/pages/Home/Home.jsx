@@ -21,8 +21,7 @@ const Home = () => {
   const [selectedFilter, setSelectedFilter] = useState('');
   const [displayEmails, setDisplayEmails] = useState([]);
   const [page, setPage] = useState(1);
-  const scrollableArea = useRef(null);
-  const isEmailsExists = useRef(false);
+  const observer = useRef(null);
 
   useEffect(() => {
     function fetchEmails() {
@@ -41,7 +40,6 @@ const Home = () => {
             email.body = '';
             return email;
           });
-          isEmailsExists.current = true;
           dispatch(setEmails(list));
           dispatch(setTotal(data.total));
         })
@@ -78,18 +76,20 @@ const Home = () => {
       rootMargin: '-100px',
       threshold: 0,
     };
-    console.log(option);
-    const observer = new IntersectionObserver(handleObserver, option);
-    if (scrollableArea.current) {
+    observer.current = new IntersectionObserver(handleObserver, option);
+  }, [handleObserver]);
+
+  useEffect(() => {
+    if (observer.current && displayEmails.length) {
       const id = setInterval(() => {
         const nodeList = document.querySelectorAll('#email_tile');
         if (nodeList.length > 0) {
-          observer.observe(nodeList[nodeList.length - 1]);
+          observer.current.observe(nodeList[nodeList.length - 1]);
           clearInterval(id);
         }
       }, 500);
     }
-  }, [handleObserver]);
+  }, [displayEmails]);
 
   const handleEmailClick = (index, id) => {
     const localState = JSON.parse(localStorage.getItem('emails') || '{}');
@@ -109,6 +109,7 @@ const Home = () => {
 
   const handleFilterChange = (value) => {
     setSelectedFilter(value);
+    dispatch(setSelectedEmail(null));
   };
 
   return (
@@ -131,7 +132,6 @@ const Home = () => {
           className={styles.email_list}
           style={{ flex: selectedEmail === null ? 1 : 0.3 }}
           id='scrollArea'
-          ref={scrollableArea}
         >
           {displayEmails.map((email, index) => (
             <EmailTile
@@ -141,7 +141,7 @@ const Home = () => {
             />
           ))}
         </div>
-        {selectedEmail !== null && (
+        {selectedEmail !== null && displayEmails[selectedEmail] && (
           <EmailBody {...displayEmails[selectedEmail]} index={selectedEmail} />
         )}
       </div>
