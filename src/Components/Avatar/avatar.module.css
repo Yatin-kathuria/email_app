@@ -1,0 +1,13 @@
+.root {
+  background-color: var(--accent);
+  width: var(--rem-5);
+  height: var(--rem-5);
+  color: var(--white);
+  font-size: var(--rem-3);
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--rem-5);
+  padding: var(--rem-3);
+}

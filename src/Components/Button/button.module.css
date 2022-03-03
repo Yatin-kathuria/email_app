@@ -1,0 +1,31 @@
+.button {
+  border-radius: var(--rem-5);
+  min-width: 75px;
+  font-style: bold;
+  font-size: var(--rem-2);
+  transition: all 0.2s ease-in-out;
+  padding: var(--rem-1) var(--rem-3);
+  cursor: pointer;
+}
+
+.button:hover {
+  filter: brightness(92%);
+}
+
+.primary {
+  color: var(--text);
+}
+
+.secondary {
+  color: var(--white);
+}
+
+.bordered.primary {
+  background-color: var(--filter-button);
+  border: 1px solid var(--border);
+}
+
+.bordered.secondary {
+  background-color: var(--accent);
+  border: 1px solid var(--accent);
+}

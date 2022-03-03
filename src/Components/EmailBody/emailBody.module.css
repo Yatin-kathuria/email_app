@@ -1,0 +1,25 @@
+.main {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--rem-1);
+  padding: var(--rem-2) var(--rem-2);
+  margin: var(--rem-1) var(--rem-3);
+  gap: var(--rem-3);
+  color: var(--text);
+  /* cursor: pointer; */
+  /* transition: all 0.3s ease-in-out; */
+}
+
+.main article {
+  width: 100%;
+}
+
+.main h1 {
+  margin: 0;
+  font-size: var(--rem-4);
+}
+
+.main header {
+  display: flex;
+  justify-content: space-between;
+}

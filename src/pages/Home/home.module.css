@@ -1,0 +1,24 @@
+.main {
+  margin: var(--rem-4);
+  margin-bottom: 0;
+}
+
+.main header {
+  margin-bottom: var(--rem-2);
+}
+
+.body {
+  display: flex;
+  /* justify-content: ; */
+}
+
+.email_list {
+  flex: 0.3;
+  height: calc(100vh - 5.5rem);
+  overflow: auto;
+  transition: all 0.3s ease-in;
+}
+
+.body section {
+  flex: 0.7;
+}

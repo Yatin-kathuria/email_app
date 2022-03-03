@@ -1,0 +1,31 @@
+.main {
+  display: flex;
+  border: 1px solid var(--border);
+  border-radius: var(--rem-1);
+  padding: var(--rem-1) var(--rem-2);
+  margin: var(--rem-1);
+  gap: var(--rem-3);
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.main:hover {
+  filter: brightness(93%);
+}
+
+.unread {
+  background-color: var(--white);
+}
+
+.read {
+  background-color: var(--read-background);
+}
+
+.body {
+  color: var(--text);
+}
+
+.favorite {
+  color: var(--accent);
+  font-weight: bold;
+}
